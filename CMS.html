@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Contact Management System</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+            color: #333;
+        }
+        h1 {
+            text-align: center;
+            color: #3498db;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        }
+        .input-group {
+            margin: 10px 0;
+        }
+        .input-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 8px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+        .button-group {
+            text-align: center;
+        }
+        button {
+            padding: 10px 15px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #2980b9;
+        }
+        .contact-list {
+            margin-top: 20px;
+            border-top: 1px solid #ddd;
+            padding-top: 20px;
+        }
+        .contact-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            border: 1px solid #ddd;
+            margin-bottom: 10px;
+            border-radius: 5px;
+        }
+        .contact-item button {
+            background-color: #e74c3c;
+        }
+        .contact-item button:hover {
+            background-color: #c0392b;
+        }
+        .edit-button {
+            background-color: #f39c12;
+        }
+        .edit-button:hover {
+            background-color: #e67e22;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Contact Management System</h1>
+
+    <div class="container">
+        <!-- Contact Form -->
+        <div class="input-group">
+            <label for="name">Name:</label>
+            <input type="text" id="name" placeholder="Enter contact name">
+        </div>
+        <div class="input-group">
+            <label for="email">Email:</label>
+            <input type="email" id="email" placeholder="Enter contact email">
+        </div>
+        <div class="input-group">
+            <label for="phone">Phone:</label>
+            <input type="text" id="phone" placeholder="Enter contact phone number">
+        </div>
+        
+        <div class="button-group">
+            <button onclick="addContact()">Add Contact</button>
+        </div>
+        
+        <!-- Contact List -->
+        <div class="contact-list" id="contactList">
+            <h2>Contacts</h2>
+        </div>
+    </div>
+
+    <script>
+        // Array to store contacts
+        let contacts = [];
+        let editIndex = -1;  // To track the index of the contact being edited
+
+        // Function to add a contact
+        function addContact() {
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+
+            // Validate input
+            if (!name || !email || !phone) {
+                alert("Please fill in all fields!");
+                return;
+            }
+
+            // If editing, update the contact
+            if (editIndex !== -1) {
+                contacts[editIndex] = { name, email, phone };
+                editIndex = -1;  // Reset edit index after update
+            } else {
+                // Create a new contact object
+                const newContact = { name, email, phone };
+                contacts.push(newContact);
+            }
+
+            displayContacts();
+            clearForm();
+        }
+
+        // Function to display contacts
+        function displayContacts() {
+            const contactListDiv = document.getElementById('contactList');
+            contactListDiv.innerHTML = "<h2>Contacts</h2>"; // Reset the list
+
+            if (contacts.length === 0) {
+                contactListDiv.innerHTML += "<p>No contacts available.</p>";
+                return;
+            }
+
+            // Create contact list items
+            contacts.forEach((contact, index) => {
+                const contactDiv = document.createElement('div');
+                contactDiv.classList.add('contact-item');
+                contactDiv.innerHTML = `
+                    <span>${contact.name} - ${contact.email} - ${contact.phone}</span>
+                    <button class="edit-button" onclick="editContact(${index})">Edit</button>
+                    <button onclick="deleteContact(${index})">Delete</button>
+                `;
+                contactListDiv.appendChild(contactDiv);
+            });
+        }
+
+        // Function to delete a contact
+        function deleteContact(index) {
+            contacts.splice(index, 1);
+            displayContacts();
+        }
+
+        // Function to edit a contact
+        function editContact(index) {
+            const contact = contacts[index];
+            document.getElementById('name').value = contact.name;
+            document.getElementById('email').value = contact.email;
+            document.getElementById('phone').value = contact.phone;
+
+            // Set edit index
+            editIndex = index;
+
+            // Change button text to 'Save Contact' when editing
+            document.querySelector('button').textContent = 'Save Contact';
+        }
+
+        // Function to clear the form
+        function clearForm() {
+            document.getElementById('name').value = "";
+            document.getElementById('email').value = "";
+            document.getElementById('phone').value = "";
+
+            // Reset button text back to 'Add Contact'
+            document.querySelector('button').textContent = 'Add Contact';
+        }
+    </script>
+
+</body>
+</html>
